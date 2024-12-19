@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cybersecurity Dungeon Adventure</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #222;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .dungeon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .door {
+      background: url('https://i.imgur.com/3W9BmLD.png') no-repeat center;
+      background-size: contain;
+      width: 200px;
+      height: 300px;
+      margin: 20px auto;
+      cursor: pointer;
+      border: 2px solid #fff;
+      border-radius: 10px;
+    }
+    .question-box {
+      display: none;
+      padding: 20px;
+      background: #333;
+      border-radius: 10px;
+      text-align: left;
+    }
+    .question-box input {
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .question-box button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #4CAF50;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .progress {
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="dungeon">
+    <h1>Cybersecurity Dungeon Adventure</h1>
+    <p class="progress">Progress: <span id="level">1</span>/3</p>
+    <div id="door" class="door"></div>
+    <div id="question-box" class="question-box">
+      <h3 id="question">Question goes here</h3>
+      <input type="text" id="answer" placeholder="Enter your answer">
+      <button onclick="checkAnswer()">Submit</button>
+    </div>
+    <h2 id="status"></h2>
+  </div>
+  <script>
+    const levels = [
+      {
+        question: "What is the most common type of phishing attack?",
+        answer: "email"
+      },
+      {
+        question: "Find the flag: What is 2^5? (Format: flag{value})",
+        answer: "flag{32}"
+      },
+      {
+        question: "A DDoS attack targets what part of a system?",
+        answer: "network"
+      }
+    ];
+
+    let currentLevel = 0;
+
+    const door = document.getElementById('door');
+    const questionBox = document.getElementById('question-box');
+    const questionEl = document.getElementById('question');
+    const statusEl = document.getElementById('status');
+    const progressEl = document.getElementById('level');
+    const answerInput = document.getElementById('answer');
+
+    door.addEventListener('click', () => {
+      if (currentLevel < levels.length) {
+        questionBox.style.display = 'block';
+        questionEl.textContent = levels[currentLevel].question;
+      } else {
+        statusEl.textContent = "Congratulations! You've rescued the princess! 🎉";
+        door.style.display = 'none';
+      }
+    });
+
+    function checkAnswer() {
+      const userAnswer = answerInput.value.toLowerCase().trim();
+      if (userAnswer === levels[currentLevel].answer) {
+        currentLevel++;
+        progressEl.textContent = currentLevel + 1;
+        questionBox.style.display = 'none';
+        answerInput.value = '';
+        if (currentLevel < levels.length) {
+          statusEl.textContent = "Correct! Click the door to unlock the next challenge.";
+        } else {
+          statusEl.textContent = "You've completed the game and saved the princess!";
+        }
+      } else {
+        statusEl.textContent = "Incorrect! Try again.";
+      }
+    }
+  </script>
+</body>
+</html>
