@@ -3,121 +3,144 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cybersecurity Dungeon Adventure</title>
+  <title>Cyber Attack Dungeon</title>
   <style>
+    /* Body and General Styling */
     body {
-      font-family: Arial, sans-serif;
-      background: #222;
-      color: #fff;
+      background: linear-gradient(120deg, #1e293b, #3b82f6);
+      color: white;
+      font-family: "Arial", sans-serif;
       margin: 0;
       padding: 0;
-      text-align: center;
-    }
-    .dungeon {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
+      overflow: hidden;
     }
-    .door {
-      background: url('https://i.imgur.com/3W9BmLD.png') no-repeat center;
-      background-size: contain;
-      width: 200px;
-      height: 300px;
-      margin: 20px auto;
-      cursor: pointer;
-      border: 2px solid #fff;
-      border-radius: 10px;
+    h1, h2 {
+      text-align: center;
     }
-    .question-box {
-      display: none;
+
+    /* Game Container */
+    .game-container {
+      background: #111827;
+      border: 2px solid #3b82f6;
+      border-radius: 12px;
       padding: 20px;
-      background: #333;
-      border-radius: 10px;
-      text-align: left;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.5);
     }
-    .question-box input {
-      margin: 10px 0;
-      padding: 10px;
-      font-size: 16px;
-    }
-    .question-box button {
+
+    /* Buttons */
+    .btn {
+      background-color: #3b82f6;
+      color: white;
       padding: 10px 20px;
+      margin-top: 20px;
       font-size: 16px;
-      background: #4CAF50;
+      font-weight: bold;
       border: none;
-      color: #fff;
-      cursor: pointer;
       border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
     }
-    .progress {
-      margin: 20px 0;
+    .btn:hover {
+      background-color: #2563eb;
+    }
+
+    /* Hidden content */
+    .hidden {
+      display: none;
+    }
+
+    /* Animation for door unlock */
+    .door-animation {
+      animation: shake 0.5s;
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+
+    /* Message styling */
+    .message {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <div class="dungeon">
-    <h1>Cybersecurity Dungeon Adventure</h1>
-    <p class="progress">Progress: <span id="level">1</span>/3</p>
-    <div id="door" class="door"></div>
-    <div id="question-box" class="question-box">
-      <h3 id="question">Question goes here</h3>
-      <input type="text" id="answer" placeholder="Enter your answer">
-      <button onclick="checkAnswer()">Submit</button>
+  <h1>Cyber Attack Dungeon</h1>
+  <h2>Rescue the Princess!</h2>
+  
+  <div class="game-container">
+    <p id="story">You stand before a locked dungeon door. To rescue the princess, you must answer questions correctly to find the key!</p>
+    <div id="question-box" class="hidden">
+      <p id="question">What is the capital of cyber attacks?</p>
+      <input type="text" id="answer" placeholder="Enter your answer..." />
+      <button class="btn" onclick="checkAnswer()">Submit Answer</button>
     </div>
-    <h2 id="status"></h2>
+    <div id="message-box" class="message"></div>
+    <button id="start-btn" class="btn" onclick="startGame()">Start Game</button>
   </div>
+
   <script>
-    const levels = [
-      {
-        question: "What is the most common type of phishing attack?",
-        answer: "email"
-      },
-      {
-        question: "Find the flag: What is 2^5? (Format: flag{value})",
-        answer: "flag{32}"
-      },
-      {
-        question: "A DDoS attack targets what part of a system?",
-        answer: "network"
-      }
+    // Game Variables
+    let questions = [
+      { question: "What is the capital of cyber attacks?", answer: "malware" },
+      { question: "Which protocol is used for secure websites? (Hint: HTTPS or HTTP)", answer: "https" },
+      { question: "What tool is commonly used for penetration testing? (Hint: K____x)", answer: "kali linux" }
     ];
+    let currentQuestion = 0;
 
-    let currentLevel = 0;
+    // Start Game Function
+    function startGame() {
+      document.getElementById("start-btn").classList.add("hidden");
+      document.getElementById("question-box").classList.remove("hidden");
+      showQuestion();
+    }
 
-    const door = document.getElementById('door');
-    const questionBox = document.getElementById('question-box');
-    const questionEl = document.getElementById('question');
-    const statusEl = document.getElementById('status');
-    const progressEl = document.getElementById('level');
-    const answerInput = document.getElementById('answer');
+    // Display Current Question
+    function showQuestion() {
+      let questionElement = document.getElementById("question");
+      questionElement.textContent = questions[currentQuestion].question;
+    }
 
-    door.addEventListener('click', () => {
-      if (currentLevel < levels.length) {
-        questionBox.style.display = 'block';
-        questionEl.textContent = levels[currentLevel].question;
-      } else {
-        statusEl.textContent = "Congratulations! You've rescued the princess! 🎉";
-        door.style.display = 'none';
-      }
-    });
-
+    // Check Answer
     function checkAnswer() {
-      const userAnswer = answerInput.value.toLowerCase().trim();
-      if (userAnswer === levels[currentLevel].answer) {
-        currentLevel++;
-        progressEl.textContent = currentLevel + 1;
-        questionBox.style.display = 'none';
-        answerInput.value = '';
-        if (currentLevel < levels.length) {
-          statusEl.textContent = "Correct! Click the door to unlock the next challenge.";
+      let userAnswer = document.getElementById("answer").value.trim().toLowerCase();
+      let correctAnswer = questions[currentQuestion].answer.toLowerCase();
+      let messageBox = document.getElementById("message-box");
+
+      if (userAnswer === correctAnswer) {
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+          messageBox.textContent = "Correct! On to the next question.";
+          document.getElementById("answer").value = "";
+          showQuestion();
         } else {
-          statusEl.textContent = "You've completed the game and saved the princess!";
+          messageBox.textContent = "Congratulations! You found the key and rescued the princess!";
+          document.getElementById("question-box").classList.add("hidden");
         }
       } else {
-        statusEl.textContent = "Incorrect! Try again.";
+        messageBox.textContent = "Incorrect! Try again.";
+        shakeDoor();
       }
+    }
+
+    // Door Shake Animation
+    function shakeDoor() {
+      let container = document.querySelector(".game-container");
+      container.classList.add("door-animation");
+      setTimeout(() => container.classList.remove("door-animation"), 500);
     }
   </script>
 </body>
